@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A demo storefront for learning Google Analytics 4.">
+  <title>Northstar — Everyday Essentials</title>
+
+  <!-- GA4: Replace G-XXXXXXXXXX with your own Measurement ID.
+       Find it in Google Analytics → Admin → Data streams → your Web stream. -->
+  <!--
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  -->
+
+  <style>
+    :root {
+      --ink: #18211f;
+      --muted: #64716d;
+      --paper: #f7f7f2;
+      --card: #ffffff;
+      --green: #245b4c;
+      --green-dark: #183f35;
+      --lime: #d9f27b;
+      --line: #e4e8e0;
+      --radius: 20px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; color: var(--ink); background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea { font: inherit; }
+    button, a, input, textarea { -webkit-tap-highlight-color: transparent; }
+    .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+    header { position: sticky; top: 0; z-index: 10; background: rgba(247,247,242,.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+    .nav { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { font-weight: 850; letter-spacing: -.06em; font-size: 1.45rem; }
+    .brand span { color: var(--green); }
+    .navlinks { display: flex; align-items: center; gap: 26px; color: #44514c; font-size: .92rem; }
+    .navlinks a:hover { color: var(--green); }
+    .nav-cta, .btn { display: inline-flex; justify-content: center; align-items: center; gap: 8px; border: 0; cursor: pointer; font-weight: 700; border-radius: 999px; padding: 13px 19px; transition: transform .18s, background .18s; }
+    .nav-cta, .btn-primary { background: var(--green); color: white; }
+    .nav-cta:hover, .btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); }
+    .btn-secondary { background: white; color: var(--ink); border: 1px solid var(--line); }
+    .hero { padding: 74px 0 58px; }
+    .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; align-items: center; gap: 50px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--green); background: #eaf1e6; padding: 7px 12px; border-radius: 999px; font-size: .78rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+    h1 { font-size: clamp(2.7rem, 5.7vw, 5.2rem); line-height: .99; letter-spacing: -.075em; margin: 22px 0; max-width: 680px; }
+    h1 em { font-style: normal; color: var(--green); }
+    .hero p { max-width: 530px; color: var(--muted); font-size: 1.08rem; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .hero-note { font-size: .83rem !important; margin-top: 18px; }
+    .hero-art { min-height: 430px; position: relative; border-radius: 32px; overflow: hidden; background: #dce6d6; display: grid; place-items: center; }
+    .sun { position: absolute; width: 170px; height: 170px; background: var(--lime); border-radius: 50%; top: 42px; right: 38px; }
+    .shape { position: absolute; width: 72%; height: 67%; bottom: -8%; left: 14%; background: #315e4e; border-radius: 48% 48% 18% 18%; transform: rotate(-8deg); }
+    .shape::before { content: ""; position: absolute; width: 44%; height: 112%; top: -25%; left: 29%; border-radius: 45% 45% 20% 20%; background: #477c66; transform: rotate(14deg); }
+    .shape::after { content: ""; position: absolute; width: 28%; height: 45%; top: 3%; left: 36%; background: #e4b88e; border-radius: 48% 48% 30% 30%; transform: rotate(14deg); }
+    .art-label { position: absolute; bottom: 24px; left: 24px; background: rgba(255,255,255,.9); border-radius: 14px; padding: 13px 16px; font-weight: 800; box-shadow: 0 8px 30px #1b3c2a18; }
+    .trust-row { display: flex; flex-wrap: wrap; gap: 25px; color: #53615b; font-size: .86rem; margin-top: 36px; }
+    .trust-row span::before { content: "✓"; color: var(--green); font-weight: 900; margin-right: 7px; }
+    section { padding: 68px 0; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 28px; }
+    .section-head h2 { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.05; letter-spacing: -.06em; margin: 10px 0 0; }
+    .section-head p { max-width: 390px; color: var(--muted); margin: 0; }
+    .products { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .product { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; transition: transform .2s, box-shadow .2s; }
+    .product:hover { transform: translateY(-4px); box-shadow: 0 14px 34px #1c3b2810; }
+    .product-art { height: 230px; display: grid; place-items: center; overflow: hidden; }
+    .product-art svg { width: 74%; height: 80%; }
+    .tone-one { background: #e8e6d8; } .tone-two { background: #dbe7df; } .tone-three { background: #f1dfd0; }
+    .product-body { padding: 20px; }
+    .product-type { color: var(--muted); font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 800; }
+    .product h3 { margin: 7px 0 3px; font-size: 1.16rem; }
+    .price-row { display: flex; align-items: center; justify-content: space-between; margin-top: 18px; gap: 10px; }
+    .price { font-size: 1.15rem; font-weight: 850; }
+    .add-btn { border: 0; border-radius: 999px; padding: 10px 14px; background: var(--lime); color: var(--ink); cursor: pointer; font-weight: 800; }
+    .add-btn:hover { background: #cbe85e; }
+    .about-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 42px; align-items: start; }
+    .about-panel { background: var(--green); color: white; padding: 32px; border-radius: 24px; }
+    .about-panel strong { display: block; font-size: 2.5rem; letter-spacing: -.06em; }
+    .about-panel p { color: #dce9df; }
+    .about-copy h2 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -.06em; margin: 0 0 14px; }
+    .about-copy p { color: var(--muted); }
+    .contact { background: #e9eee6; border-radius: 28px; padding: clamp(24px, 5vw, 54px); display: grid; grid-template-columns: .85fr 1.15fr; gap: 40px; }
+    .contact h2 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -.06em; line-height: 1.05; margin: 12px 0; }
+    .contact p { color: var(--muted); }
+    form { display: grid; gap: 13px; }
+    label { font-weight: 750; font-size: .9rem; display: grid; gap: 7px; }
+    input, textarea { width: 100%; border: 1px solid #d4dcd2; background: white; border-radius: 12px; padding: 13px 14px; outline: none; }
+    input:focus, textarea:focus { border-color: var(--green); box-shadow: 0 0 0 3px #245b4c18; }
+    textarea { min-height: 100px; resize: vertical; }
+    .form-message { min-height: 24px; color: var(--green-dark); font-weight: 700; font-size: .9rem; }
+    footer { padding: 28px 0; color: var(--muted); font-size: .85rem; }
+    .footer-row { display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: wrap; }
+    .cart-pill { background: var(--lime); color: var(--ink); border-radius: 999px; padding: 3px 8px; font-size: .78rem; margin-left: 3px; }
+    .toast { position: fixed; bottom: 22px; left: 50%; transform: translate(-50%, 20px); background: var(--ink); color: white; padding: 12px 18px; border-radius: 999px; opacity: 0; pointer-events: none; transition: .2s; z-index: 20; box-shadow: 0 10px 35px #0002; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    @media (max-width: 780px) {
+      .hero-grid, .about-grid, .contact { grid-template-columns: 1fr; }
+      .hero { padding-top: 44px; }
+      .hero-art { min-height: 340px; }
+      .products { grid-template-columns: 1fr; }
+      .product-art { height: 260px; }
+      .section-head { align-items: start; flex-direction: column; }
+      .navlinks { gap: 12px; font-size: .82rem; }
+      .nav-cta { display: none; }
+    }
+    @media (max-width: 460px) {
+      .wrap { width: min(100% - 28px, 1120px); }
+      .nav { min-height: 66px; }
+      .navlinks { gap: 9px; }
+      .navlinks a { font-size: .76rem; }
+      .hero-art { min-height: 280px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#home" data-track="nav_home">northstar<span>.</span></a>
+      <nav class="navlinks" aria-label="Main navigation">
+        <a href="#shop" data-track="nav_shop">Shop</a>
+        <a href="#story" data-track="nav_story">Our story</a>
+        <a href="#contact" data-track="nav_contact">Contact</a>
+      </nav>
+      <a class="nav-cta" href="#shop" data-track="nav_cta">Explore collection <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="eyebrow">Thoughtfully made · Everyday use</span>
+          <h1>Less, but <em>better.</em></h1>
+          <p>Useful everyday essentials, designed with care. Explore a small collection of considered objects for a calmer, more intentional routine.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#shop" data-track="hero_shop">Shop the collection <span aria-hidden="true">→</span></a>
+            <a class="btn btn-secondary" href="#story" data-track="hero_story">Our philosophy</a>
+          </div>
+          <div class="trust-row">
+            <span>Thoughtful design</span><span>Built for everyday</span><span>Simple by choice</span>
+          </div>
+          <p class="hero-note">Demo storefront for a Google Analytics 4 learning project.</p>
+        </div>
+        <div class="hero-art" role="img" aria-label="Abstract illustration of a person holding a plant">
+          <div class="sun"></div><div class="shape"></div>
+          <div class="art-label">Everyday, reimagined.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="shop">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow">The collection</span><h2>Small things.<br>Better days.</h2></div>
+          <p>Explore the products, open their details, and try the demo cart. These interactions are designed to create useful GA4 events.</p>
+        </div>
+        <div class="products">
+          <article class="product" data-product-id="field-bottle">
+            <div class="product-art tone-one">
+              <svg viewBox="0 0 240 200" role="img" aria-label="Illustration of a reusable bottle"><ellipse cx="120" cy="178" rx="70" ry="9" fill="#c9c7b9"/><rect x="101" y="24" width="38" height="22" rx="5" fill="#4e675a"/><rect x="94" y="42" width="52" height="20" rx="8" fill="#315e4e"/><rect x="78" y="55" width="84" height="112" rx="23" fill="#7d9d85"/><rect x="89" y="68" width="62" height="82" rx="15" fill="#a9c1a6"/><path d="M100 113 Q120 88 140 113" fill="none" stroke="#315e4e" stroke-width="4" stroke-linecap="round"/></svg>
+            </div>
+            <div class="product-body">
+              <span class="product-type">On the go</span><h3>Field Bottle</h3><div>Reusable bottle for everyday adventures.</div>
+              <div class="price-row"><span class="price">₹899</span><button class="add-btn" data-action="add_to_cart" data-item="Field Bottle" data-value="899">Add to cart +</button></div>
+            </div>
+          </article>
+          <article class="product" data-product-id="daily-tote">
+            <div class="product-art tone-two">
+              <svg viewBox="0 0 240 200" role="img" aria-label="Illustration of a tote bag"><ellipse cx="120" cy="179" rx="72" ry="8" fill="#bdcfc3"/><path d="M80 76 C80 22 160 22 160 76" fill="none" stroke="#315e4e" stroke-width="12" stroke-linecap="round"/><path d="M65 70 L175 70 L187 166 Q120 184 53 166 Z" fill="#8caf9b"/><path d="M77 91 L163 91 L168 151 Q120 163 72 151 Z" fill="#b8cfbf"/><path d="M105 117 Q120 100 135 117 Q120 138 105 117" fill="#315e4e"/></svg>
+            </div>
+            <div class="product-body">
+              <span class="product-type">Carry well</span><h3>Daily Tote</h3><div>A dependable carry-all for busy days.</div>
+              <div class="price-row"><span class="price">₹649</span><button class="add-btn" data-action="add_to_cart" data-item="Daily Tote" data-value="649">Add to cart +</button></div>
+            </div>
+          </article>
+          <article class="product" data-product-id="desk-journal">
+            <div class="product-art tone-three">
+              <svg viewBox="0 0 240 200" role="img" aria-label="Illustration of a notebook"><ellipse cx="120" cy="174" rx="74" ry="9" fill="#dcc8b8"/><g transform="rotate(-8 120 100)"><rect x="68" y="25" width="112" height="145" rx="8" fill="#8b5c45"/><rect x="77" y="25" width="103" height="145" rx="7" fill="#d3a183"/><path d="M98 70 H156 M98 84 H156 M98 98 H146" stroke="#8b5c45" stroke-width="3" stroke-linecap="round"/><path d="M116 125 Q128 107 140 125 Q128 145 116 125" fill="#8b5c45"/><path d="M77 35 V160" stroke="#f1d9c8" stroke-width="2"/></g></svg>
+            </div>
+            <div class="product-body">
+              <span class="product-type">Make space</span><h3>Desk Journal</h3><div>A quiet place for plans, notes, and ideas.</div>
+              <div class="price-row"><span class="price">₹499</span><button class="add-btn" data-action="add_to_cart" data-item="Desk Journal" data-value="499">Add to cart +</button></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="story">
+      <div class="wrap about-grid">
+        <div class="about-panel">
+          <strong>Less noise.<br>More meaning.</strong>
+          <p>Northstar is a fictional demo brand created for learning website analytics.</p>
+          <a class="btn btn-secondary" href="#contact" data-track="story_contact">Get in touch →</a>
+        </div>
+        <div class="about-copy">
+          <span class="eyebrow">Our philosophy</span>
+          <h2>Good design earns its place.</h2>
+          <p>We believe everyday objects should be useful, durable, and thoughtfully designed. This demo page gives visitors a few simple ways to explore a brand, discover products, and contact the team.</p>
+          <p>From an analytics perspective, each section provides a chance to understand what captures attention and which actions people take next.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="wrap">
+        <div class="contact">
+          <div>
+            <span class="eyebrow">Say hello</span>
+            <h2>Have a question?<br>Let's talk.</h2>
+            <p>Submit this demo form to test a lead-generation event. No information is sent to a server.</p>
+          </div>
+          <form id="contact-form">
+            <label for="name">Your name<input id="name" name="name" autocomplete="name" required placeholder="Alex Morgan"></label>
+            <label for="email">Email address<input id="email" name="email" type="email" autocomplete="email" required placeholder="alex@example.com"></label>
+            <label for="message">What can we help with?<textarea id="message" name="message" required placeholder="Write a short message..."></textarea></label>
+            <button class="btn btn-primary" type="submit">Send demo enquiry →</button>
+            <div id="form-message" class="form-message" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-row">
+      <a class="brand" href="#home">northstar<span>.</span></a>
+      <span>Demo website for GA4 analytics practice · No real orders are placed.</span>
+      <span>© <span id="year"></span> Northstar</span>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    let cartCount = 0;
+    let toastTimer;
+
+    function trackEvent(eventName, parameters = {}) {
+      // Events are sent only after you add your real GA4 tag above.
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', eventName, parameters);
+      } else {
+        console.info('[GA4 demo event — not sent; add your Measurement ID]', eventName, parameters);
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+    }
+
+    document.querySelectorAll('[data-track]').forEach(link => {
+      link.addEventListener('click', () => {
+        trackEvent('navigation_click', { link_name: link.dataset.track, link_text: link.textContent.trim() });
+      });
+    });
+
+    document.querySelectorAll('[data-action="add_to_cart"]').forEach(button => {
+      button.addEventListener('click', () => {
+        cartCount += 1;
+        const itemName = button.dataset.item;
+        const itemPrice = Number(button.dataset.value);
+        trackEvent('add_to_cart', {
+          currency: 'INR',
+          value: itemPrice,
+          items: [{ item_id: button.closest('[data-product-id]').dataset.productId, item_name: itemName, price: itemPrice, quantity: 1 }]
+        });
+        showToast(`${itemName} added to your demo cart · ${cartCount} item${cartCount === 1 ? '' : 's'}`);
+      });
+    });
+
+    document.getElementById('contact-form').addEventListener('submit', event => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      if (!form.reportValidity()) return;
+      trackEvent('generate_lead', { form_name: 'contact_form' });
+      document.getElementById('form-message').textContent = 'Thanks! Demo enquiry submitted successfully.';
+      form.reset();
+      showToast('Demo enquiry submitted');
+    });
+
+    // Helpful for a single-page site: track section navigation as a custom event.
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', () => {
+        const section = link.getAttribute('href').slice(1);
+        if (section) trackEvent('section_navigation', { section_name: section });
+      });
+    });
+  </script>
+</body>
+</html>
